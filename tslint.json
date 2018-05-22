@@ -3,7 +3,8 @@
   "rules": {
     "no-console": false,
     "no-empty-interface": false,
-    "jsx-no-lambda": false
+    "jsx-no-lambda": false,
+    "no-var-requires": false
   },
   "linterOptions": {
     "exclude": ["config/**/*.js", "node_modules/**/*.ts"]

@@ -1,16 +1,12 @@
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-
 import * as React from 'react';
+import Dialog from 'react-toolbox/lib/dialog';
 
 import { authorize, checkAuthorization } from './Request';
+import Searchbar from './Search/Searchbar';
 import SearchResults from './Search/SearchResults';
 
 interface IState {
+  actions: Array<{ label: string; onClick: () => void }>;
   authorized: boolean;
   open: boolean;
 }
@@ -18,7 +14,14 @@ interface IState {
 class MainPage extends React.Component<any, IState> {
   constructor(props: any) {
     super(props);
-    this.state = { authorized: false, open: false };
+    this.state = {
+      actions: [
+        { label: 'Cancel', onClick: this.handleClose },
+        { label: 'Agree', onClick: this.authorization }
+      ],
+      authorized: false,
+      open: false
+    };
   }
   public componentWillMount() {
     checkAuthorization().then(response => {
@@ -29,38 +32,24 @@ class MainPage extends React.Component<any, IState> {
       }
     });
   }
+
   public render() {
     return (
       <div>
         <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
+          actions={this.state.actions}
+          active={this.state.open}
+          onEscKeyDown={this.handleClose}
+          onOverlayClick={this.handleClose}
+          title="Credentials Needed"
         >
-          <DialogTitle id="alert-dialog-title">
-            {'Credentials Needed'}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              To continue, it's necessary to authorize the use of your
-              credentials in the Spotify app. After that, you will be redirected
-              back here.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Disagree
-            </Button>
-            <Button
-              onClick={this.authorization}
-              color="primary"
-              autoFocus={true}
-            >
-              Agree
-            </Button>
-          </DialogActions>
+          <p>
+            {' '}
+            To continue, it's necessary to authorize the use of your credentials
+            in the Spotify app. After that, you will be redirected back here.
+          </p>
         </Dialog>
+        <Searchbar />
         <SearchResults />
       </div>
     );

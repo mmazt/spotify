@@ -1,7 +1,7 @@
-import { Typography } from '@material-ui/core';
-import Avatar from '@material-ui/core/Avatar';
 import * as React from 'react';
 import { connect } from 'react-redux';
+import Avatar from 'react-toolbox/lib/avatar';
+const style = require('../styles.css');
 
 class UserInfo extends React.Component<any> {
   constructor(props: any) {
@@ -10,11 +10,12 @@ class UserInfo extends React.Component<any> {
 
   public render() {
     return (
-      <div>
+      <div className={style.userContainer}>
         {this.props.image ? (
           <Avatar
             alt={this.props.name ? this.props.name : 'No Name'}
-            src={this.props.image}
+            image={this.props.image}
+            cover={true}
             //   className={classes.avatar}
           />
         ) : (
@@ -22,7 +23,7 @@ class UserInfo extends React.Component<any> {
         )}
         {this.props.name ? (
           <a href={this.props.url}>
-            <Typography>{this.props.name}</Typography>
+            <h3>{this.props.name}</h3>
           </a>
         ) : (
           <p>Not logged in</p>

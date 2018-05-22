@@ -1,5 +1,5 @@
-import { TableCell, TableRow } from '@material-ui/core';
 import * as React from 'react';
+import { TableCell, TableRow } from 'react-toolbox/lib/table';
 
 const TrackCard = (props: {
   key: string;
@@ -12,9 +12,7 @@ const TrackCard = (props: {
 }) => {
   return (
     <TableRow key={props.key}>
-      <TableCell component="th" scope="row">
-        <img src={props.img} />
-      </TableCell>
+      <TableCell>{/* <img src={props.img} /> */}</TableCell>
       <TableCell>{props.name}</TableCell>
       <TableCell>{props.artists}</TableCell>
       <TableCell>{props.album}</TableCell>

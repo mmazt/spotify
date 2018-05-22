@@ -1,15 +1,13 @@
 import { Dispatch } from 'react-redux';
-import { albumData, artistData, search } from '../Components/Request';
-import {
-  // GET_ALBUM_TRACKS,
-  // GET_ARTIST_ALBUMS,
-  GET_USER_DATA
-} from './actionTypes';
+import { search } from '../Components/Request';
 import {
   AUTOCOMPLETE,
+  GET_ALBUM_TRACKS,
   GET_ALBUMS,
+  GET_ARTIST_ALBUMS,
   GET_ARTISTS,
   GET_TRACKS,
+  GET_USER_DATA,
   SET_OPTIONS
 } from './actionTypes';
 
@@ -41,19 +39,19 @@ function getTracks(payload: [any]) {
   };
 }
 
-// function artistAlbums(payload: [any]) {
-//   return {
-//     payload,
-//     type: GET_ARTIST_ALBUMS
-//   };
-// }
+export function artistAlbums(payload: [any]) {
+  return {
+    payload,
+    type: GET_ARTIST_ALBUMS
+  };
+}
 
-// function albumTracks(payload: [any]) {
-//   return {
-//     payload,
-//     type: GET_ALBUM_TRACKS
-//   };
-// }
+export function albumTracks(payload: [any]) {
+  return {
+    payload,
+    type: GET_ALBUM_TRACKS
+  };
+}
 
 export function getUser(payload: { name: string; image: string; url: string }) {
   return {
@@ -109,30 +107,6 @@ export function getAlbumsAction(term: string) {
   };
 }
 
-export function getAlbumTracksAction(id: string) {
-  return (dispatch: Dispatch) => {
-    console.log(id);
-    albumData(id).then(response => {
-      console.log(response);
-      // const tracks = response.data.artists.items;
-
-      // dispatch(setOptions(options));
-    });
-  };
-}
-
-export function getArtistAlbumsAction(id: string) {
-  return (dispatch: Dispatch) => {
-    artistData(id).then(response => {
-      console.log(response);
-      // const tracks = response.data.artists.items;
-
-      // dispatch(setOptions(options));
-    });
-  };
-}
-
-// TODO
 export function getArtistsAction(term: string) {
   return (dispatch: Dispatch) => {
     search(term, 'artist').then(response => {
@@ -149,7 +123,6 @@ export function getArtistsAction(term: string) {
   };
 }
 
-// TODO
 export function getTracksAction(term: string) {
   return (dispatch: Dispatch) => {
     search(term, 'track').then(response => {
@@ -165,16 +138,3 @@ export function getTracksAction(term: string) {
     });
   };
 }
-
-// export function getUserAction() {
-//   return (dispatch: Dispatch) => {
-//     userData().then(response => {
-//       const result = {
-//         image: response.data.images.url,
-//         name: response.data.display_name,
-//         url: response.data.href
-//       };
-//       dispatch(getUser(result));
-//     });
-//   };
-// }

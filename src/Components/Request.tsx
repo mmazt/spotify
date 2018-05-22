@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { getUser } from '../Actions/searchActions';
+import { albumTracks, artistAlbums, getUser } from '../Actions/searchActions';
 import env from '../config/envSelector';
 import * as Index from '../index';
 
@@ -31,36 +31,33 @@ export const search = (term: string, type: string, autocomplete?: boolean) => {
   });
 };
 
-export const albumData = (id: string) => {
+export const getData = (id: string, type: string) => {
   const token = window.localStorage.getItem('token');
-  const url = env().api + '/albums/' + id + '/tracks';
+  const url =
+    type === 'album'
+      ? env().api + '/albums/' + id + '/tracks'
+      : env().api + '/artists/' + id + '/albums';
   return axios({
     headers: {
       Authorization: 'Bearer ' + token
     },
     method: 'get',
     url
-  }).catch((error: any) => {
-    console.log(error);
-    clearData();
-    return error;
-  });
-};
-
-export const artistData = (id: string) => {
-  const token = window.localStorage.getItem('token');
-  const url = env().api + '/artists/' + id + '/albums';
-  return axios({
-    headers: {
-      Authorization: 'Bearer ' + token
-    },
-    method: 'get',
-    url
-  }).catch((error: any) => {
-    console.log(error);
-    clearData();
-    return error;
-  });
+  })
+    .then(response => {
+      const items = response.data.items;
+      if (type === 'album') {
+        Index.store.dispatch(albumTracks(items));
+      } else {
+        Index.store.dispatch(artistAlbums(items));
+      }
+      return true;
+    })
+    .catch((error: any) => {
+      console.log(error);
+      clearData();
+      return error;
+    });
 };
 
 // Busca informações do usuário na base do Spotify e envia ao Redux para uso imediato e localStorage para próximas sessões

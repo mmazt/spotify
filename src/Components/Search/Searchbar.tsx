@@ -1,9 +1,8 @@
-import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import TextField from '@material-ui/core/TextField';
-
 import * as React from 'react';
+import { IconButton } from 'react-toolbox/lib/button';
+import Input from 'react-toolbox/lib/input';
+import { IconMenu, MenuItem } from 'react-toolbox/lib/menu';
+
 import { connect } from 'react-redux';
 import { autocompleteAction } from '../../Actions/searchActions';
 import {
@@ -11,76 +10,78 @@ import {
   getArtistsAction,
   getTracksAction
 } from '../../Actions/searchActions';
+const style = require('../../styles.css');
 
 export interface IState {
   type: string;
   term: string;
-  element: any;
 }
 
 class Searchbar extends React.Component<any, IState> {
   constructor(props: any) {
     super(props);
-    this.state = { term: '', type: 'Album', element: null };
+    this.state = { term: '', type: 'Album' };
   }
 
   public render() {
     return (
-      <div>
-        <Menu
-          id="simple-menu"
-          anchorEl={this.state.element}
-          open={Boolean(this.state.element)}
-          onClose={() => this.handleClose()}
-        >
-          <MenuItem onClick={() => this.handleClose('Album')}>Album</MenuItem>
-          <MenuItem onClick={() => this.handleClose('Artist')}>Artist</MenuItem>
-          <MenuItem onClick={() => this.handleClose('Track')}>Track</MenuItem>
-        </Menu>
-        <TextField value={this.state.term} onChange={this.changeTerm} />
-        <Button onClick={this.search}>Search</Button>
-        <Button
-          // aria-owns={this.state.element ? 'simple-menu' : null}
-          aria-haspopup="true"
-          onClick={this.handleClick}
-        >
-          Search for: {this.state.type}
-        </Button>
+      <div className={style.searchContainer}>
+        <Input
+          className={style.searchInput}
+          type="text"
+          label="Search"
+          floating={false}
+          value={this.state.term}
+          onChange={this.changeTerm}
+          onKeyPress={this.search}
+        />
+        <IconButton icon="search" onClick={this.search} />
+        <div>
+          <IconMenu icon="more_vert" position="auto" iconRipple={true}>
+            <MenuItem
+              caption="Album"
+              onClick={() => this.handleSelect('Album')}
+            />
+            <MenuItem
+              caption="Artist"
+              onClick={() => this.handleSelect('Artist')}
+            />
+            <MenuItem
+              caption="Track"
+              onClick={() => this.handleSelect('Track')}
+            />
+          </IconMenu>
+          {this.state.type}
+        </div>
       </div>
     );
   }
 
-  private handleClick = (e: any) => {
-    this.setState({ element: e.currentTarget });
+  private handleSelect = (type: string) => {
+    this.setState({ type });
   };
 
-  private handleClose = (type?: string) => {
-    if (type) {
-      this.setState({ element: null, type });
+  private search = (e: any) => {
+    if (e.key && e.key !== 'Enter') {
+      return;
     } else {
-      this.setState({ element: null });
+      if (this.state.type === 'Album') {
+        this.props.dispatch(getAlbumsAction(this.state.term));
+      }
+      if (this.state.type === 'Artist') {
+        this.props.dispatch(getArtistsAction(this.state.term));
+      }
+      if (this.state.type === 'Track') {
+        this.props.dispatch(getTracksAction(this.state.term));
+      }
     }
   };
 
-  private search = () => {
-    if (this.state.type === 'Album') {
-      this.props.dispatch(getAlbumsAction(this.state.term));
+  private changeTerm = (e: any) => {
+    if (e.length > 3) {
+      this.props.dispatch(autocompleteAction(e, this.state.type));
     }
-    if (this.state.type === 'Artist') {
-      this.props.dispatch(getArtistsAction(this.state.term));
-    }
-    if (this.state.type === 'Track') {
-      this.props.dispatch(getTracksAction(this.state.term));
-    }
-  };
-
-  private changeTerm = (e: React.FormEvent<HTMLInputElement>) => {
-    if (e.currentTarget.value.length > 3) {
-      this.props.dispatch(
-        autocompleteAction(e.currentTarget.value, this.state.type)
-      );
-    }
-    this.setState({ term: e.currentTarget.value });
+    this.setState({ term: e });
   };
 }
 

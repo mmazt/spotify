@@ -1,0 +1,48 @@
+.searchInput {
+    max-width: 10rem;
+}
+
+.searchContainer {
+    max-width: 40rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+}
+
+.headerSearch {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.thumbnail {
+    max-width: 64px;
+}
+
+.dialogImg {
+    max-width: 150px;
+    margin-right: 5%;
+}
+
+.albumContainer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.table {
+    max-width: 90%;
+}
+
+.tableHead {
+    min-width: 90%;
+    max-width: 90%;
+}
+
+.tableRows {
+    min-width: 90%;
+    max-width: 90%;
+}

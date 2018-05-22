@@ -1,20 +1,17 @@
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
+import AppBar from 'react-toolbox/lib/app_bar';
+
 import Searchbar from './Search/Searchbar';
 import UserInfo from './UserInfo';
 
+const style = require('../styles.css');
+
 const Header = (props: { page: string }) => {
   return (
-    <AppBar position="static" color="default">
-      <Toolbar>
-        <Typography variant="title" color="inherit">
-          Spotify Search App
-        </Typography>
+    <AppBar title="Spotify Search App" fixed={true} rightIcon={<UserInfo />}>
+      <div className={style.headerSearch}>
         <Searchbar />
-        <UserInfo />
-      </Toolbar>
+      </div>
     </AppBar>
   );
 };

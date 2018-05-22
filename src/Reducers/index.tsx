@@ -2,6 +2,8 @@ import { combineReducers } from 'redux';
 import * as ActionTypes from '../Actions/actionTypes';
 
 const initialState = {
+  albumData: [],
+  artistData: {},
   autocomplete: [],
   searchOptions: {
     limit: 0,
@@ -16,22 +18,6 @@ const initialState = {
   },
   userData: {}
 };
-
-export interface IRootState {
-  autocomplete: [any];
-  searchOptions: {
-    limit: 0;
-    offset: 0;
-    searchMode: string;
-    total: 0;
-  };
-  searchResults: {
-    albums: [any];
-    artists: [any];
-    tracks: [any];
-  };
-  userData: {};
-}
 
 // Reducer das ações relacionadas aos resultados das buscas
 function searchReducer(
@@ -115,7 +101,43 @@ function userDataReducer(
   }
 }
 
+function albumReducer(
+  state = initialState.albumData,
+  action:
+    | {
+        payload: any;
+        type: string;
+      }
+    | any
+) {
+  switch (action.type) {
+    case ActionTypes.GET_ALBUM_TRACKS:
+      return Object.assign({}, state, action.payload);
+    default:
+      return state;
+  }
+}
+
+function artistReducer(
+  state = initialState.artistData,
+  action:
+    | {
+        payload: any;
+        type: string;
+      }
+    | any
+) {
+  switch (action.type) {
+    case ActionTypes.GET_ARTIST_ALBUMS:
+      return Object.assign({}, state, action.payload);
+    default:
+      return state;
+  }
+}
+
 const rootReducer = combineReducers({
+  albumReducer,
+  artistReducer,
   autocompleteReducer,
   searchOptionsReducer,
   searchReducer,
