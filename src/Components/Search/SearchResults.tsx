@@ -6,6 +6,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { getAlbumTracksAction } from '../../Actions/searchActions';
 import AlbumCard from './AlbumCard';
 import ArtistCard from './ArtistCard';
 import TrackCard from './TrackCard';
@@ -23,6 +24,7 @@ export interface IProps {
     tracks: [any];
   };
   country: string;
+  dispatch: any;
 }
 
 class SearchResults extends React.Component<IProps> {
@@ -109,6 +111,7 @@ class SearchResults extends React.Component<IProps> {
           artists={item.artists}
           availability={item.available_markets.indexOf(this.props.country) > -1}
           link={item.href}
+          onClick={this.openAlbum(item.id)}
         />
       ));
     } else {
@@ -125,6 +128,9 @@ class SearchResults extends React.Component<IProps> {
       ));
     }
   }
+  public openAlbum = (id: string) => {
+    this.props.dispatch(getAlbumTracksAction(id));
+  };
 
   public render() {
     const header =

@@ -111,6 +111,7 @@ export function getAlbumsAction(term: string) {
 
 export function getAlbumTracksAction(id: string) {
   return (dispatch: Dispatch) => {
+    console.log(id);
     albumData(id).then(response => {
       console.log(response);
       // const tracks = response.data.artists.items;

@@ -1,7 +1,5 @@
 import { TableCell, TableRow } from '@material-ui/core';
 import * as React from 'react';
-import { getAlbumTracksAction } from '../../Actions/searchActions';
-import * as Index from '../../index';
 
 const AlbumCard = (props: {
   artists: [any];
@@ -10,9 +8,10 @@ const AlbumCard = (props: {
   key: string;
   link: string;
   name: string;
+  onClick: any;
 }) => {
   return (
-    <TableRow key={props.key} onClick={() => openModal(props.key)}>
+    <TableRow key={props.key} onClickCapture={props.onClick}>
       <TableCell component="th" scope="row">
         <img src={props.img} />
       </TableCell>
@@ -27,10 +26,6 @@ const AlbumCard = (props: {
       </TableCell>
     </TableRow>
   );
-};
-
-const openModal = (id: any) => {
-  Index.store.dispatch(getAlbumTracksAction(id));
 };
 
 export default AlbumCard;

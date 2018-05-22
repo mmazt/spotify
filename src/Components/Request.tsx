@@ -33,7 +33,7 @@ export const search = (term: string, type: string, autocomplete?: boolean) => {
 
 export const albumData = (id: string) => {
   const token = window.localStorage.getItem('token');
-  const url = env().api + '/albums/' + id + 'tracks';
+  const url = env().api + '/albums/' + id + '/tracks';
   return axios({
     headers: {
       Authorization: 'Bearer ' + token
@@ -49,7 +49,7 @@ export const albumData = (id: string) => {
 
 export const artistData = (id: string) => {
   const token = window.localStorage.getItem('token');
-  const url = env().api + '/artists/' + id + 'albums';
+  const url = env().api + '/artists/' + id + '/albums';
   return axios({
     headers: {
       Authorization: 'Bearer ' + token
