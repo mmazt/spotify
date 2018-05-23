@@ -202,7 +202,7 @@ const getFavoritesData = async (type: string) => {
       method: 'get',
       url
     }).then(response => {
-      const result = response.data[type][type].data;
+      const result = response[type].data[type][type];
       console.log(result);
       if (type === 'albums') {
         Index.store.dispatch(getFavoriteAlbums(result));
@@ -222,6 +222,11 @@ export const saveToFavorites = async (id: string, type: string) => {
   favorites[type].push(id);
 
   return saveStorageData('favorites_' + user.name, favorites);
+};
+
+export const checkFavorite = async (id: string, type: string) => {
+  const favorites: any = await getFavorites(type);
+  return favorites[type].indexOf(id);
 };
 
 // Função que retorna os favoritos do usuário, e, caso não existam, cria arrays vazias para receber dados

@@ -3,7 +3,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Table, TableCell, TableHead, TableRow } from 'react-toolbox/lib/table';
 
-import { getData, saveToFavorites } from '../Request';
+import { checkFavorite, getData, saveToFavorites } from '../Request';
 import AlbumCard from './AlbumCard';
 import ArtistCard from './ArtistCard';
 
@@ -133,11 +133,11 @@ class SearchResults extends React.Component<IProps, IState> {
       return props.results.artists.map((item: any) => (
         <TableRow key={item.id} onClick={() => this.openAlbum(item, 'artist')}>
           <TableCell onClick={() => this.toggleFavorite(item.id, 'artists')}>
-            {/* {favoriteCheck(item.id) ? ( */}
-            <i className="material-icons">favorite</i>
-            {/* // ) : (
-            //   <i className="material-icons">favorite_border</i>
-            // )} */}
+            {this.favoriteCheck(item.id, 'artist') ? (
+              <i className="material-icons">favorite</i>
+            ) : (
+              <i className="material-icons">favorite_border</i>
+            )}
           </TableCell>
           <TableCell>
             {item.images.length > 0 ? (
@@ -155,11 +155,11 @@ class SearchResults extends React.Component<IProps, IState> {
       return props.results.albums.map((item: any) => (
         <TableRow key={item.id} onClick={() => this.openAlbum(item, 'album')}>
           <TableCell onClick={() => this.toggleFavorite(item.id, 'albums')}>
-            {/* {favoriteCheck(item.id) ? ( */}
-            <i className="material-icons">favorite</i>
-            {/* // ) : (
-            //   <i className="material-icons">favorite_border</i>
-            // )} */}
+            {this.favoriteCheck(item.id, 'albums') ? (
+              <i className="material-icons">favorite</i>
+            ) : (
+              <i className="material-icons">favorite_border</i>
+            )}
           </TableCell>
           <TableCell>
             {item.images.length > 0 ? (
@@ -183,11 +183,11 @@ class SearchResults extends React.Component<IProps, IState> {
       return props.results.tracks.map((item: any) => (
         <TableRow key={item.id}>
           <TableCell onClick={() => this.toggleFavorite(item.id, 'tracks')}>
-            {/* {favoriteCheck(item.id) ? ( */}
-            <i className="material-icons">favorite</i>
-            {/* // ) : (
-            //   <i className="material-icons">favorite_border</i>
-            // )} */}
+            {this.favoriteCheck(item.id, 'tracks') ? (
+              <i className="material-icons">favorite</i>
+            ) : (
+              <i className="material-icons">favorite_border</i>
+            )}
           </TableCell>
           <TableCell>
             {item.album.images.length > 0 ? (
@@ -204,6 +204,10 @@ class SearchResults extends React.Component<IProps, IState> {
       ));
     }
   }
+
+  public favoriteCheck = (id: string, type: string) => {
+    return checkFavorite(id, type);
+  };
 
   public toggleFavorite = (id: string, type: string) => {
     saveToFavorites(id, type);

@@ -122,6 +122,16 @@
         min-width: 10vw;
         max-width: 10vw;
     }
+    .thumbnail {
+        max-width: 25px;
+    }
+    .main {
+        font-size: 0.8rem !important;
+        padding: 3px !important;
+    }
+    i {
+        font-size: 0.5rem;
+    }
 }
 
 .notFound {
