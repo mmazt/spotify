@@ -36,9 +36,18 @@ class Searchbar extends React.Component<any, IState> {
           onChange={this.changeTerm}
           onKeyPress={this.search}
         />
-        <IconButton icon="search" onClick={this.search} />
+        <IconButton
+          className={style.searchButton}
+          icon="search"
+          onClick={this.search}
+        />
         <div className={style.searchMenu}>
-          <IconMenu icon="more_vert" position="auto" iconRipple={true}>
+          <IconMenu
+            className={style.inputhMenu}
+            icon="more_vert"
+            position="topLeft"
+            iconRipple={true}
+          >
             <MenuItem
               caption="Album"
               onClick={() => this.handleSelect('Album')}

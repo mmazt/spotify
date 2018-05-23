@@ -5,6 +5,7 @@ import {
   artistAlbums,
   getFavoriteAlbums,
   getFavoriteArtists,
+  getFavoriteIds,
   getFavoriteTracks,
   getUser
 } from '../Actions/searchActions';
@@ -189,11 +190,14 @@ const getFavoritesData = async (type: string) => {
   const favorites = await getFavorites();
   if (favorites[type]) {
     const token = await getStorageString('token');
-    const list = await Promise.resolve(
-      favorites[type].reduce((item1: string, item2: string) => {
-        return item1 + ',' + item2;
-      })
-    );
+    let list;
+    if (favorites[type].length > 0) {
+      list = await Promise.resolve(
+        favorites[type].reduce((item1: string, item2: string) => {
+          return item1 + ',' + item2;
+        })
+      );
+    }
     const url = env().api + '/' + type + '/?ids=' + list;
     axios({
       headers: {
@@ -201,17 +205,20 @@ const getFavoritesData = async (type: string) => {
       },
       method: 'get',
       url
-    }).then(response => {
-      const result = response[type].data[type][type];
-      console.log(result);
-      if (type === 'albums') {
-        Index.store.dispatch(getFavoriteAlbums(result));
-      } else if (type === 'artists') {
-        Index.store.dispatch(getFavoriteArtists(result));
-      } else {
-        Index.store.dispatch(getFavoriteTracks(result));
-      }
-    });
+    })
+      .then(response => {
+        const result = response.data[type];
+        if (type === 'albums') {
+          Index.store.dispatch(getFavoriteAlbums(result));
+        } else if (type === 'artists') {
+          Index.store.dispatch(getFavoriteArtists(result));
+        } else {
+          Index.store.dispatch(getFavoriteTracks(result));
+        }
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
   }
 };
 
@@ -219,14 +226,31 @@ const getFavoritesData = async (type: string) => {
 export const saveToFavorites = async (id: string, type: string) => {
   const user = await getStorageData('user');
   const favorites: any = await getFavorites(type);
-  favorites[type].push(id);
-
-  return saveStorageData('favorites_' + user.name, favorites);
+  if (favorites[type].indexOf(id) < 0) {
+    favorites[type].push(id);
+    await saveStorageData('favorites_' + user.name, favorites);
+    const result = await getFavorites(type);
+    return Promise.resolve(Index.store.dispatch(getFavoriteIds(result)));
+  } else {
+    return Promise.resolve(true);
+  }
+};
+export const deleteFromFavorites = async (id: string, type: string) => {
+  const user = await getStorageData('user');
+  const favorites: any = await getFavorites(type);
+  if (favorites[type].indexOf(id) >= 0) {
+    favorites[type].slice(favorites[type].indexOf(id), 1);
+    await saveStorageData('favorites_' + user.name, favorites);
+    const result = await getFavorites(type);
+    return Promise.resolve(Index.store.dispatch(getFavoriteIds(result)));
+  } else {
+    return Promise.resolve(true);
+  }
 };
 
 export const checkFavorite = async (id: string, type: string) => {
   const favorites: any = await getFavorites(type);
-  return favorites[type].indexOf(id);
+  return favorites[type].indexOf(id) > -1;
 };
 
 // Função que retorna os favoritos do usuário, e, caso não existam, cria arrays vazias para receber dados
@@ -234,6 +258,7 @@ const getFavorites: any = async () => {
   const user = await getStorageData('user');
   const favorites = await getStorageData('favorites_' + user.name);
   if (favorites) {
+    Index.store.dispatch(getFavoriteIds(favorites));
     return Promise.resolve(favorites);
   } else {
     return Promise.resolve({ tracks: [], albums: [], artists: [] });

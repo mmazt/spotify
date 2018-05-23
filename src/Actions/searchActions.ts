@@ -1,5 +1,6 @@
 import { Dispatch } from 'react-redux';
 import { search } from '../Components/Request';
+import { GET_FAVORITE_IDS } from './actionTypes';
 
 import {
   AUTOCOMPLETE,
@@ -62,6 +63,13 @@ export function getFavoriteArtists(payload: any) {
   };
 }
 
+export function getFavoriteIds(payload: any) {
+  return {
+    payload,
+    type: GET_FAVORITE_IDS
+  };
+}
+
 export function artistAlbums(payload: any) {
   return {
     payload,
@@ -116,48 +124,60 @@ export function autocompleteAction(term: string, type: string) {
 
 export function getAlbumsAction(term: string) {
   return (dispatch: Dispatch) => {
-    search(term, 'album').then(response => {
-      const albums = response.data.albums.items;
-      const options = {
-        limit: response.data.albums.limit,
-        offset: response.data.albums.offset,
-        searchMode: 'albums',
-        total: response.data.albums.total
-      };
-      dispatch(getAlbums(albums));
-      dispatch(setOptions(options));
-    });
+    search(term, 'album')
+      .then(response => {
+        const albums = response.data.albums.items;
+        const options = {
+          limit: response.data.albums.limit,
+          offset: response.data.albums.offset,
+          searchMode: 'albums',
+          total: response.data.albums.total
+        };
+        dispatch(getAlbums(albums));
+        dispatch(setOptions(options));
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 }
 
 export function getArtistsAction(term: string) {
   return (dispatch: Dispatch) => {
-    search(term, 'artist').then(response => {
-      const artists = response.data.artists.items;
-      const options = {
-        limit: response.data.artists.limit,
-        offset: response.data.artists.offset,
-        searchMode: 'artists',
-        total: response.data.artists.total
-      };
-      dispatch(getArtists(artists));
-      dispatch(setOptions(options));
-    });
+    search(term, 'artist')
+      .then(response => {
+        const artists = response.data.artists.items;
+        const options = {
+          limit: response.data.artists.limit,
+          offset: response.data.artists.offset,
+          searchMode: 'artists',
+          total: response.data.artists.total
+        };
+        dispatch(getArtists(artists));
+        dispatch(setOptions(options));
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 }
 
 export function getTracksAction(term: string) {
   return (dispatch: Dispatch) => {
-    search(term, 'track').then(response => {
-      const tracks = response.data.tracks.items;
-      const options = {
-        limit: response.data.tracks.limit,
-        offset: response.data.tracks.offset,
-        searchMode: 'tracks',
-        total: response.data.tracks.total
-      };
-      dispatch(getTracks(tracks));
-      dispatch(setOptions(options));
-    });
+    search(term, 'track')
+      .then(response => {
+        const tracks = response.data.tracks.items;
+        const options = {
+          limit: response.data.tracks.limit,
+          offset: response.data.tracks.offset,
+          searchMode: 'tracks',
+          total: response.data.tracks.total
+        };
+        dispatch(getTracks(tracks));
+        dispatch(setOptions(options));
+      })
+      .catch(error => {
+        console.log(error);
+      });
   };
 }

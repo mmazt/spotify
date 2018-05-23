@@ -15,6 +15,7 @@ const initialState = {
   searchResults: {
     albums: [],
     artists: [],
+    ids: {},
     tracks: []
   },
   userData: {}
@@ -146,12 +147,14 @@ function favoriteReducer(
     | any
 ) {
   switch (action.type) {
+    case ActionTypes.GET_FAVORITE_IDS:
+      return Object.assign({}, state, { ids: action.payload });
     case ActionTypes.GET_FAVORITE_TRACKS:
-      return Object.assign({}, state, { tracks: action.payload });
+      return Object.assign({}, state, { tracks: [action.payload.tracks] });
     case ActionTypes.GET_FAVORITE_ALBUMS:
-      return Object.assign({}, state, { albums: action.payload });
+      return Object.assign({}, state, { albums: [action.payload] });
     case ActionTypes.GET_FAVORITE_ARTISTS:
-      return Object.assign({}, state, { artists: action.payload });
+      return Object.assign({}, state, { artists: [action.payload] });
     default:
       return state;
   }

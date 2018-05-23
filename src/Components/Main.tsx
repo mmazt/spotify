@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import Dialog from 'react-toolbox/lib/dialog';
 
 import { authorize, checkAuthorization, getAllFavorites } from './Request';
-import Searchbar from './Search/Searchbar';
 import SearchResults from './Search/SearchResults';
 const style = require('../styles.css');
 
@@ -52,8 +51,6 @@ class MainPage extends React.Component<any, IState> {
             in the Spotify app. After that, you will be redirected back here.
           </p>
         </Dialog>
-
-        <Searchbar />
         {this.props.search ? (
           <SearchResults />
         ) : (

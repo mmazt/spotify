@@ -1,5 +1,18 @@
 .searchInput {
-    max-width: 15vw;
+    min-width: 20vw;
+    max-width: 30vw;
+}
+
+.searchInput input {
+    background-color: #fff;
+    padding: 5px 15px !important;
+    border-radius: 50px;
+}
+
+.searchInput label {
+    top: calc(var(--input-padding) + 1 * var(--input-field-padding)) !important;
+    left: 10px !important;
+    color: #424242;
 }
 
 .searchContainer {
@@ -11,8 +24,14 @@
     align-items: baseline;
 }
 
+.searchButton {
+    color: #fff !important;
+    margin-left: 8px !important;
+    padding-left: 8px !important;
+}
+
 .searchMenu {
-    color: 424242;
+    color: white;
     font-weight: 500;
     display: flex;
     flex-direction: row;
@@ -20,6 +39,17 @@
     justify-content: center;
     align-items: center;
     vertical-align: bottom;
+}
+
+.searchMenu div[data-react-toolbox="menu"] {
+    left: 5vh !important;
+    top: 1vh !important;
+}
+
+.searchMenu button {
+    color: #fff !important;
+    margin-left: 8px !important;
+    padding-left: 8px !important;
 }
 
 .searchMenuLabel {
@@ -35,7 +65,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .searchItems {
@@ -100,13 +130,24 @@
 
 .main {
     display: flex;
-    max-height: 100%;
+    margin-top: 10vh;
+    max-height: 85vh;
+    min-height: 85vh;
     max-width: 100vw;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
 }
 
+.searchResults {
+    max-height: 82vh;
+    max-width: 90vw;
+    overflow-y: scroll;
+}
+
 @media only screen and (max-width: 480px) {
+    .material-icons {
+        font-size: 0.6rem !important;
+    }
     .title {
         display: none;
     }

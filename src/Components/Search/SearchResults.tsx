@@ -3,7 +3,12 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Table, TableCell, TableHead, TableRow } from 'react-toolbox/lib/table';
 
-import { checkFavorite, getData, saveToFavorites } from '../Request';
+import {
+  deleteFromFavorites,
+  getAllFavorites,
+  getData,
+  saveToFavorites
+} from '../Request';
 import AlbumCard from './AlbumCard';
 import ArtistCard from './ArtistCard';
 
@@ -25,12 +30,14 @@ export interface IProps {
   tracks: any;
   country: string;
   dispatch: any;
+  favorites: { tracks: [string]; albums: [string]; artists: [string] };
 }
 
 export interface IState {
   results: Array<{}>;
   albumData: { name: string; img: string; artist: string };
   artistData: { name: string; img: string; genres: any; popularity: string };
+  favorites: { tracks: any; albums: any; artists: any };
   openAlbum: boolean;
   openArtist: boolean;
 }
@@ -41,10 +48,12 @@ class SearchResults extends React.Component<IProps, IState> {
     this.state = {
       albumData: { name: '', img: '', artist: '' },
       artistData: { name: '', img: '', genres: [], popularity: '' },
+      favorites: { tracks: [], albums: [], artists: [] },
       openAlbum: false,
       openArtist: false,
       results: []
     };
+    getAllFavorites();
   }
 
   public componentWillReceiveProps(props: IProps) {
@@ -54,6 +63,13 @@ class SearchResults extends React.Component<IProps, IState> {
       (props.results && props.results.tracks.length > 0)
     ) {
       this.setState({ results: this.dataCreator(props) });
+    }
+    if (
+      (props.favorites && props.favorites.artists.length > 0) ||
+      (props.favorites && props.favorites.albums.length > 0) ||
+      (props.favorites && props.favorites.tracks.length > 0)
+    ) {
+      this.setState({ favorites: props.favorites });
     }
   }
 
@@ -66,7 +82,7 @@ class SearchResults extends React.Component<IProps, IState> {
           <TableCell>{''}</TableCell>
           <TableCell>Name</TableCell>
           <TableCell>Genres</TableCell>
-          <TableCell>Popularity</TableCell>
+          <TableCell>Pop.</TableCell>
         </TableHead>
       );
     } else if (mode === 'albums') {
@@ -76,7 +92,7 @@ class SearchResults extends React.Component<IProps, IState> {
           <TableCell>{''}</TableCell>
           <TableCell>Name</TableCell>
           <TableCell>Artist</TableCell>
-          <TableCell>Availability</TableCell>
+          <TableCell>Avail.</TableCell>
         </TableHead>
       );
     } else {
@@ -87,7 +103,7 @@ class SearchResults extends React.Component<IProps, IState> {
           <TableCell>Name</TableCell>
           <TableCell>Artist</TableCell>
           <TableCell>Album</TableCell>
-          <TableCell>Duration</TableCell>
+          <TableCell>Dur.</TableCell>
         </TableHead>
       );
     }
@@ -133,7 +149,7 @@ class SearchResults extends React.Component<IProps, IState> {
       return props.results.artists.map((item: any) => (
         <TableRow key={item.id} onClick={() => this.openAlbum(item, 'artist')}>
           <TableCell onClick={() => this.toggleFavorite(item.id, 'artists')}>
-            {this.favoriteCheck(item.id, 'artist') ? (
+            {this.state.favorites.artists.indexOf(item.id) >= 0 ? (
               <i className="material-icons">favorite</i>
             ) : (
               <i className="material-icons">favorite_border</i>
@@ -155,7 +171,7 @@ class SearchResults extends React.Component<IProps, IState> {
       return props.results.albums.map((item: any) => (
         <TableRow key={item.id} onClick={() => this.openAlbum(item, 'album')}>
           <TableCell onClick={() => this.toggleFavorite(item.id, 'albums')}>
-            {this.favoriteCheck(item.id, 'albums') ? (
+            {this.state.favorites.albums.indexOf(item.id) >= 0 ? (
               <i className="material-icons">favorite</i>
             ) : (
               <i className="material-icons">favorite_border</i>
@@ -173,9 +189,7 @@ class SearchResults extends React.Component<IProps, IState> {
             {item.artists.length > 1 ? 'Various Artists' : item.artists[0].name}
           </TableCell>
           <TableCell>
-            {item.available_markets.indexOf(this.props.country)
-              ? 'Available in your country'
-              : 'Not available in your country'}
+            {item.available_markets.indexOf(this.props.country) ? 'Yes' : 'No'}
           </TableCell>
         </TableRow>
       ));
@@ -183,7 +197,7 @@ class SearchResults extends React.Component<IProps, IState> {
       return props.results.tracks.map((item: any) => (
         <TableRow key={item.id}>
           <TableCell onClick={() => this.toggleFavorite(item.id, 'tracks')}>
-            {this.favoriteCheck(item.id, 'tracks') ? (
+            {this.state.favorites.tracks.indexOf(item.id) >= 0 ? (
               <i className="material-icons">favorite</i>
             ) : (
               <i className="material-icons">favorite_border</i>
@@ -205,12 +219,17 @@ class SearchResults extends React.Component<IProps, IState> {
     }
   }
 
-  public favoriteCheck = (id: string, type: string) => {
-    return checkFavorite(id, type);
-  };
-
-  public toggleFavorite = (id: string, type: string) => {
-    saveToFavorites(id, type);
+  public toggleFavorite = async (id: string, type: string) => {
+    const { favorites } = this.state;
+    if (favorites[type].indexOf(id) < 0) {
+      favorites[type].push(id);
+      await saveToFavorites(id, type);
+      this.setState({ favorites });
+    } else {
+      favorites[type].slice(favorites[type].indexOf(id), 1);
+      await deleteFromFavorites(id, type);
+      this.setState({ favorites });
+    }
   };
 
   public openAlbum: any = (item: any, type: string) => {
@@ -272,7 +291,7 @@ class SearchResults extends React.Component<IProps, IState> {
         </TableHead>
       );
     return (
-      <div>
+      <div className={style.searchResults}>
         <Table selectable={false}>
           {header}
           {this.state.results}
@@ -302,6 +321,7 @@ function mapStateToProps(state: any) {
   const result = {
     albums: state.artistReducer.albums,
     country: state.userDataReducer.country,
+    favorites: state.favoriteReducer.ids,
     options: state.searchOptionsReducer,
     results: state.searchReducer,
     tracks: state.albumReducer.tracks

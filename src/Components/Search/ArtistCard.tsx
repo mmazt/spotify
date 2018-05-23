@@ -10,43 +10,46 @@ const AlbumCard = (props: {
   handleToggle: any;
   country: any;
 }) => {
-  const albums = props.albums
-    .sort((item1: any, item2: any) => {
-      if (new Date(item1.release_date) > new Date(item2.release_date)) {
-        return 1;
-      } else if (new Date(item1.release_date) < new Date(item2.release_date)) {
-        return -1;
-      } else {
-        return;
-      }
-    })
-    .filter((item: any, i: number): any => {
-      if (i < 5) {
-        return;
-      }
-    })
-    .map((item: any) => {
-      return (
-        <TableRow key={item.id}>
-          <TableCell>
-            {item.images.length > 0 ? (
-              <img className={style.thumbnail} src={item.images[0].url} />
-            ) : (
-              ''
-            )}
-          </TableCell>
-          <TableCell>{item.name}</TableCell>
-          <TableCell>
-            {item.artists.length > 1 ? 'Various Artists' : item.artists[0].name}
-          </TableCell>
-          <TableCell>
-            {item.available_markets.indexOf(props.country)
-              ? 'Available in your country'
-              : 'Not available in your country'}
-          </TableCell>
-        </TableRow>
-      );
-    });
+  let albums = props.albums.sort((item1: any, item2: any) => {
+    if (new Date(item1.release_date) > new Date(item2.release_date)) {
+      return 1;
+    } else if (new Date(item1.release_date) < new Date(item2.release_date)) {
+      return -1;
+    } else {
+      return;
+    }
+  });
+  console.log(albums);
+  albums = albums.map((item: any) => {
+    return (
+      <TableRow key={item.id}>
+        <TableCell>
+          {item.images.length > 0 ? (
+            <img className={style.thumbnail} src={item.images[0].url} />
+          ) : (
+            ''
+          )}
+        </TableCell>
+        <TableCell>{item.name}</TableCell>
+        <TableCell>
+          {item.artists.length > 1 ? 'Various Artists' : item.artists[0].name}
+        </TableCell>
+        <TableCell>
+          {item.available_markets.indexOf(props.country)
+            ? 'Available in your country'
+            : 'Not available in your country'}
+        </TableCell>
+      </TableRow>
+    );
+  });
+  console.log(albums);
+  albums = albums.filter((item: any, i: number): any => {
+    if (i < 5) {
+      return item;
+    } else {
+      return;
+    }
+  });
   console.log(albums);
   return (
     <Dialog

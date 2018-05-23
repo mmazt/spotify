@@ -8,9 +8,12 @@ const style = require('../styles.css');
 
 const Header = (props: { page: string }) => {
   return (
-    <AppBar fixed={true} rightIcon={<UserInfo />}>
+    <AppBar
+      leftIcon={<img height="100%" src="logo.svg" />}
+      fixed={true}
+      rightIcon={<UserInfo />}
+    >
       <div className={style.headerContainer}>
-        <h1 className={style.title}>Spotify Search</h1>
         <div className={style.searchItems}>
           <Searchbar />
         </div>
