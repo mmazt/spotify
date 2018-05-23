@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import Dialog from 'react-toolbox/lib/dialog';
 
-import { authorize, checkAuthorization } from './Request';
+import { authorize, checkAuthorization, getAllFavorites } from './Request';
 import Searchbar from './Search/Searchbar';
 import SearchResults from './Search/SearchResults';
+const style = require('../styles.css');
 
 interface IState {
   actions: Array<{ label: string; onClick: () => void }>;
@@ -27,6 +29,7 @@ class MainPage extends React.Component<any, IState> {
     checkAuthorization().then(response => {
       if (response) {
         this.setState({ authorized: true });
+        getAllFavorites();
       } else {
         this.setState({ authorized: false, open: true });
       }
@@ -35,7 +38,7 @@ class MainPage extends React.Component<any, IState> {
 
   public render() {
     return (
-      <div>
+      <div className={style.main}>
         <Dialog
           actions={this.state.actions}
           active={this.state.open}
@@ -49,8 +52,13 @@ class MainPage extends React.Component<any, IState> {
             in the Spotify app. After that, you will be redirected back here.
           </p>
         </Dialog>
+
         <Searchbar />
-        <SearchResults />
+        {this.props.search ? (
+          <SearchResults />
+        ) : (
+          <div className={style.notFound}>Item não encontrado</div>
+        )}
       </div>
     );
   }
@@ -63,4 +71,17 @@ class MainPage extends React.Component<any, IState> {
   };
 }
 
-export default MainPage;
+function mapStateToProps(state: any) {
+  const results = state.searchReducer;
+  if (
+    (results && results.artists.length > 0) ||
+    (results && results.albums.length > 0) ||
+    (results && results.tracks.length > 0)
+  ) {
+    return { search: true };
+  } else {
+    return { search: false };
+  }
+}
+
+export default connect(mapStateToProps)(MainPage);

@@ -1,36 +1,74 @@
 import * as React from 'react';
-import { TableCell, TableRow } from 'react-toolbox/lib/table';
+import Dialog from 'react-toolbox/lib/dialog';
+import { Table, TableCell, TableRow } from 'react-toolbox/lib/table';
+const style = require('../../styles.css');
 
-const ArtistCard = (props: {
-  key: string;
-  img: string;
-  name: string;
-  genres: [string];
-  popularity: number;
-  link: string;
+const AlbumCard = (props: {
+  open: boolean;
+  albums: any;
+  data: { name: string; img: string; genres: [string]; popularity: string };
+  handleToggle: any;
+  country: any;
 }) => {
+  const albums = props.albums
+    .sort((item1: any, item2: any) => {
+      if (new Date(item1.release_date) > new Date(item2.release_date)) {
+        return 1;
+      } else if (new Date(item1.release_date) < new Date(item2.release_date)) {
+        return -1;
+      } else {
+        return;
+      }
+    })
+    .filter((item: any, i: number): any => {
+      if (i < 5) {
+        return;
+      }
+    })
+    .map((item: any) => {
+      return (
+        <TableRow key={item.id}>
+          <TableCell>
+            {item.images.length > 0 ? (
+              <img className={style.thumbnail} src={item.images[0].url} />
+            ) : (
+              ''
+            )}
+          </TableCell>
+          <TableCell>{item.name}</TableCell>
+          <TableCell>
+            {item.artists.length > 1 ? 'Various Artists' : item.artists[0].name}
+          </TableCell>
+          <TableCell>
+            {item.available_markets.indexOf(props.country)
+              ? 'Available in your country'
+              : 'Not available in your country'}
+          </TableCell>
+        </TableRow>
+      );
+    });
+  console.log(albums);
   return (
-    <TableRow key={props.key}>
-      <TableCell>{/* <img src={props.img} /> */}</TableCell>
-      <TableCell>{props.name}</TableCell>
-      <TableCell>{props.genres}</TableCell>
-      <TableCell>{translatePop(props.popularity)}</TableCell>
-    </TableRow>
+    <Dialog
+      actions={[{ label: 'Close', onClick: props.handleToggle }]}
+      active={props.open}
+      onEscKeyDown={props.handleToggle}
+      onOverlayClick={props.handleToggle}
+      type="fullscreen"
+    >
+      <div className={style.albumContainer}>
+        <div className={style.dialogImgContainer}>
+          <h2>{props.data.name}</h2>
+          <img className={style.dialogImg} src={props.data.img} />
+        </div>
+        <div className={style.tableContainer}>
+          <div className={style.dialogTable}>
+            <Table selectable={false}>{albums}</Table>
+          </div>
+        </div>
+      </div>
+    </Dialog>
   );
 };
 
-const translatePop = (pop: number) => {
-  if (pop >= 80) {
-    return 'Hot';
-  }
-  if (pop >= 60) {
-    return 'Cool';
-  }
-  if (pop >= 30) {
-    return 'Regular';
-  } else {
-    return 'Underground';
-  }
-};
-
-export default ArtistCard;
+export default AlbumCard;

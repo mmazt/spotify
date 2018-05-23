@@ -5,9 +5,16 @@ class Authorize extends React.Component {
   constructor(props: any) {
     super(props);
     if (props.location && props.location.hash) {
-      saveToken(props.location.hash);
+      saveToken(props.location.hash).then(
+        res => {
+          props.history.push('/');
+        },
+        error => {
+          console.log(error);
+          props.history.push('/');
+        }
+      );
     }
-    props.history.push('/');
   }
 
   public render() {

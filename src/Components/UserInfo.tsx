@@ -21,13 +21,6 @@ class UserInfo extends React.Component<any> {
         ) : (
           ''
         )}
-        {this.props.name ? (
-          <a href={this.props.url}>
-            <h3>{this.props.name}</h3>
-          </a>
-        ) : (
-          <p>Not logged in</p>
-        )}
       </div>
     );
   }

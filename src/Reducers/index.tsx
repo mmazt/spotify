@@ -5,6 +5,7 @@ const initialState = {
   albumData: [],
   artistData: {},
   autocomplete: [],
+  favorites: { tracks: [], albums: [], artists: [] },
   searchOptions: {
     limit: 0,
     offset: 0,
@@ -112,7 +113,7 @@ function albumReducer(
 ) {
   switch (action.type) {
     case ActionTypes.GET_ALBUM_TRACKS:
-      return Object.assign({}, state, action.payload);
+      return Object.assign({}, state, { tracks: action.payload });
     default:
       return state;
   }
@@ -129,7 +130,28 @@ function artistReducer(
 ) {
   switch (action.type) {
     case ActionTypes.GET_ARTIST_ALBUMS:
-      return Object.assign({}, state, action.payload);
+      return Object.assign({}, state, { albums: action.payload });
+    default:
+      return state;
+  }
+}
+
+function favoriteReducer(
+  state = initialState.favorites,
+  action:
+    | {
+        payload: any;
+        type: string;
+      }
+    | any
+) {
+  switch (action.type) {
+    case ActionTypes.GET_FAVORITE_TRACKS:
+      return Object.assign({}, state, { tracks: action.payload });
+    case ActionTypes.GET_FAVORITE_ALBUMS:
+      return Object.assign({}, state, { albums: action.payload });
+    case ActionTypes.GET_FAVORITE_ARTISTS:
+      return Object.assign({}, state, { artists: action.payload });
     default:
       return state;
   }
@@ -139,6 +161,7 @@ const rootReducer = combineReducers({
   albumReducer,
   artistReducer,
   autocompleteReducer,
+  favoriteReducer,
   searchOptionsReducer,
   searchReducer,
   userDataReducer

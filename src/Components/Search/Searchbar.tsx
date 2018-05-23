@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import { IconButton } from 'react-toolbox/lib/button';
 import Input from 'react-toolbox/lib/input';
 import { IconMenu, MenuItem } from 'react-toolbox/lib/menu';
@@ -36,7 +37,7 @@ class Searchbar extends React.Component<any, IState> {
           onKeyPress={this.search}
         />
         <IconButton icon="search" onClick={this.search} />
-        <div>
+        <div className={style.searchMenu}>
           <IconMenu icon="more_vert" position="auto" iconRipple={true}>
             <MenuItem
               caption="Album"
@@ -51,7 +52,7 @@ class Searchbar extends React.Component<any, IState> {
               onClick={() => this.handleSelect('Track')}
             />
           </IconMenu>
-          {this.state.type}
+          <div className={style.searchMenuLabel}>{this.state.type}</div>
         </div>
       </div>
     );

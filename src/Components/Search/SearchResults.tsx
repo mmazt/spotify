@@ -3,11 +3,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Table, TableCell, TableHead, TableRow } from 'react-toolbox/lib/table';
 
-import { getData } from '../Request';
+import { getData, saveToFavorites } from '../Request';
 import AlbumCard from './AlbumCard';
+import ArtistCard from './ArtistCard';
+
 const style = require('../../styles.css');
 
 export interface IProps {
+  albums: any;
   options: {
     limit: number;
     offset: number;
@@ -26,8 +29,10 @@ export interface IProps {
 
 export interface IState {
   results: Array<{}>;
-  open: boolean;
   albumData: { name: string; img: string; artist: string };
+  artistData: { name: string; img: string; genres: any; popularity: string };
+  openAlbum: boolean;
+  openArtist: boolean;
 }
 
 class SearchResults extends React.Component<IProps, IState> {
@@ -35,13 +40,10 @@ class SearchResults extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       albumData: { name: '', img: '', artist: '' },
-      open: false,
-      results: [
-        <TableRow key="01">
-          <TableCell />
-          <TableCell>Pesquisa sem resultados</TableCell>
-        </TableRow>
-      ]
+      artistData: { name: '', img: '', genres: [], popularity: '' },
+      openAlbum: false,
+      openArtist: false,
+      results: []
     };
   }
 
@@ -55,11 +57,12 @@ class SearchResults extends React.Component<IProps, IState> {
     }
   }
 
-  public tableHeader = () => {
+  public tableHeader: any = () => {
     const mode = this.props.options.searchMode;
     if (mode === 'artists') {
       return (
-        <TableHead className={style.tableHead}>
+        <TableHead>
+          <TableCell>Fav</TableCell>
           <TableCell>{''}</TableCell>
           <TableCell>Name</TableCell>
           <TableCell>Genres</TableCell>
@@ -68,7 +71,8 @@ class SearchResults extends React.Component<IProps, IState> {
       );
     } else if (mode === 'albums') {
       return (
-        <TableHead className={style.tableHead}>
+        <TableHead>
+          <TableCell>Fav</TableCell>
           <TableCell>{''}</TableCell>
           <TableCell>Name</TableCell>
           <TableCell>Artist</TableCell>
@@ -77,7 +81,8 @@ class SearchResults extends React.Component<IProps, IState> {
       );
     } else {
       return (
-        <TableHead className={style.tableHead}>
+        <TableHead>
+          <TableCell>Fav</TableCell>
           <TableCell>{''}</TableCell>
           <TableCell>Name</TableCell>
           <TableCell>Artist</TableCell>
@@ -126,11 +131,14 @@ class SearchResults extends React.Component<IProps, IState> {
     const mode = props.options.searchMode;
     if (mode === 'artists') {
       return props.results.artists.map((item: any) => (
-        <TableRow
-          className={style.tableRow}
-          key={item.id}
-          onClick={() => this.openAlbum(item, 'artist')}
-        >
+        <TableRow key={item.id} onClick={() => this.openAlbum(item, 'artist')}>
+          <TableCell onClick={() => this.toggleFavorite(item.id, 'artists')}>
+            {/* {favoriteCheck(item.id) ? ( */}
+            <i className="material-icons">favorite</i>
+            {/* // ) : (
+            //   <i className="material-icons">favorite_border</i>
+            // )} */}
+          </TableCell>
           <TableCell>
             {item.images.length > 0 ? (
               <img className={style.thumbnail} src={item.images[0].url} />
@@ -145,11 +153,14 @@ class SearchResults extends React.Component<IProps, IState> {
       ));
     } else if (mode === 'albums') {
       return props.results.albums.map((item: any) => (
-        <TableRow
-          className={style.tableRow}
-          key={item.id}
-          onClick={() => this.openAlbum(item, 'album')}
-        >
+        <TableRow key={item.id} onClick={() => this.openAlbum(item, 'album')}>
+          <TableCell onClick={() => this.toggleFavorite(item.id, 'albums')}>
+            {/* {favoriteCheck(item.id) ? ( */}
+            <i className="material-icons">favorite</i>
+            {/* // ) : (
+            //   <i className="material-icons">favorite_border</i>
+            // )} */}
+          </TableCell>
           <TableCell>
             {item.images.length > 0 ? (
               <img className={style.thumbnail} src={item.images[0].url} />
@@ -170,7 +181,14 @@ class SearchResults extends React.Component<IProps, IState> {
       ));
     } else {
       return props.results.tracks.map((item: any) => (
-        <TableRow className={style.tableRow} key={item.id}>
+        <TableRow key={item.id}>
+          <TableCell onClick={() => this.toggleFavorite(item.id, 'tracks')}>
+            {/* {favoriteCheck(item.id) ? ( */}
+            <i className="material-icons">favorite</i>
+            {/* // ) : (
+            //   <i className="material-icons">favorite_border</i>
+            // )} */}
+          </TableCell>
           <TableCell>
             {item.album.images.length > 0 ? (
               <img className={style.thumbnail} src={item.album.images[0].url} />
@@ -186,6 +204,11 @@ class SearchResults extends React.Component<IProps, IState> {
       ));
     }
   }
+
+  public toggleFavorite = (id: string, type: string) => {
+    saveToFavorites(id, type);
+  };
+
   public openAlbum: any = (item: any, type: string) => {
     getData(item.id, type).then(() => {
       if (type === 'album') {
@@ -199,13 +222,40 @@ class SearchResults extends React.Component<IProps, IState> {
             name: item.name
           }
         });
+        setTimeout(
+          () =>
+            this.setState({
+              openAlbum: !this.state.openAlbum
+            }),
+          100
+        );
       }
-      setTimeout(() => this.setState({ open: true }), 100);
+      if (type === 'artist') {
+        this.setState({
+          artistData: {
+            genres: item.genres,
+            img: item.images.length > 0 ? item.images[0].url : '',
+            name: item.name,
+            popularity: item.popularity
+          }
+        });
+        setTimeout(
+          () =>
+            this.setState({
+              openArtist: !this.state.openArtist
+            }),
+
+          100
+        );
+      }
     });
   };
 
-  public handleToggle: any = () => {
-    this.setState({ open: !this.state.open });
+  public toggleAlbum: any = () => {
+    this.setState({ openAlbum: !this.state.openAlbum });
+  };
+  public toggleArtist: any = () => {
+    this.setState({ openArtist: !this.state.openArtist });
   };
 
   public render() {
@@ -225,12 +275,19 @@ class SearchResults extends React.Component<IProps, IState> {
         </Table>
 
         <AlbumCard
-          open={this.state.open}
+          open={this.state.openAlbum}
           data={this.state.albumData}
           tracks={this.props && this.props.tracks ? this.props.tracks : []}
-          handleToggle={this.handleToggle}
+          handleToggle={this.toggleAlbum}
           convert={this.convertToMin}
           insertComma={this.insertComma}
+        />
+        <ArtistCard
+          open={this.state.openArtist}
+          data={this.state.artistData}
+          albums={this.props && this.props.albums ? this.props.albums : []}
+          handleToggle={this.toggleArtist}
+          country={this.props.country}
         />
       </div>
     );
@@ -238,12 +295,12 @@ class SearchResults extends React.Component<IProps, IState> {
 }
 
 function mapStateToProps(state: any) {
-  console.log(state);
   const result = {
+    albums: state.artistReducer.albums,
     country: state.userDataReducer.country,
     options: state.searchOptionsReducer,
     results: state.searchReducer,
-    tracks: state.albumReducer
+    tracks: state.albumReducer.tracks
   };
   return result;
 }

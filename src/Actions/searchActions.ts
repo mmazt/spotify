@@ -1,11 +1,15 @@
 import { Dispatch } from 'react-redux';
 import { search } from '../Components/Request';
+
 import {
   AUTOCOMPLETE,
   GET_ALBUM_TRACKS,
   GET_ALBUMS,
   GET_ARTIST_ALBUMS,
   GET_ARTISTS,
+  GET_FAVORITE_ALBUMS,
+  GET_FAVORITE_ARTISTS,
+  GET_FAVORITE_TRACKS,
   GET_TRACKS,
   GET_USER_DATA,
   SET_OPTIONS
@@ -39,14 +43,33 @@ function getTracks(payload: [any]) {
   };
 }
 
-export function artistAlbums(payload: [any]) {
+export function getFavoriteTracks(payload: any) {
+  return {
+    payload,
+    type: GET_FAVORITE_TRACKS
+  };
+}
+export function getFavoriteAlbums(payload: any) {
+  return {
+    payload,
+    type: GET_FAVORITE_ALBUMS
+  };
+}
+export function getFavoriteArtists(payload: any) {
+  return {
+    payload,
+    type: GET_FAVORITE_ARTISTS
+  };
+}
+
+export function artistAlbums(payload: any) {
   return {
     payload,
     type: GET_ARTIST_ALBUMS
   };
 }
 
-export function albumTracks(payload: [any]) {
+export function albumTracks(payload: any) {
   return {
     payload,
     type: GET_ALBUM_TRACKS
