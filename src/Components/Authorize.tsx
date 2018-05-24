@@ -10,8 +10,8 @@ class Authorize extends React.Component {
           props.history.push('/');
         },
         error => {
-          console.log(error);
           props.history.push('/');
+          throw error;
         }
       );
     }

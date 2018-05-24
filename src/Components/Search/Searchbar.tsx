@@ -1,7 +1,8 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
+import Autocomplete from 'react-toolbox/lib/autocomplete';
 import { IconButton } from 'react-toolbox/lib/button';
-import Input from 'react-toolbox/lib/input';
 import { IconMenu, MenuItem } from 'react-toolbox/lib/menu';
 
 import { connect } from 'react-redux';
@@ -18,8 +19,14 @@ export interface IState {
   term: string;
 }
 
-class Searchbar extends React.Component<any, IState> {
-  constructor(props: any) {
+export interface IProps {
+  nav: any;
+  dispatch: any;
+  autocomplete: [string];
+}
+
+class Searchbar extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = { term: '', type: 'Album' };
   }
@@ -27,15 +34,20 @@ class Searchbar extends React.Component<any, IState> {
   public render() {
     return (
       <div className={style.searchContainer}>
-        <Input
-          className={style.searchInput}
-          type="text"
+        <Autocomplete
           label="Search"
+          className={style.searchInput}
           floating={false}
+          suggestionMatch="anywhere"
+          direction="auto"
+          multiple={false}
           value={this.state.term}
-          onChange={this.changeTerm}
-          onKeyPress={this.search}
+          onQueryChange={this.changeTerm}
+          onChange={this.changeSelection}
+          source={this.props.autocomplete}
+          showSuggestionsWhenValueIsSet={true}
         />
+
         <IconButton
           className={style.searchButton}
           icon="search"
@@ -61,38 +73,64 @@ class Searchbar extends React.Component<any, IState> {
               onClick={() => this.handleSelect('Track')}
             />
           </IconMenu>
-          <div className={style.searchMenuLabel}>{this.state.type}</div>
+          <div className={style.searchMenuLabel}>{this.state.type}</div>{' '}
+          <Link to="/fav">
+            <IconButton className={style.searchButton} icon="favorite" />
+          </Link>
         </div>
       </div>
     );
   }
 
   private handleSelect = (type: string) => {
-    this.setState({ type });
+    if (this.state.term) {
+      if (type === 'Album') {
+        this.props.dispatch(getAlbumsAction(this.state.term));
+      }
+      if (type === 'Artist') {
+        this.props.dispatch(getArtistsAction(this.state.term));
+      }
+      if (type === 'Track') {
+        this.props.dispatch(getTracksAction(this.state.term));
+      }
+      this.setState({ type });
+
+      if (window.location.href.includes('/fav')) {
+        this.props.nav.push('/');
+      }
+    }
   };
 
   private search = (e: any) => {
-    if (e.key && e.key !== 'Enter') {
-      return;
-    } else {
-      if (this.state.type === 'Album') {
-        this.props.dispatch(getAlbumsAction(this.state.term));
-      }
-      if (this.state.type === 'Artist') {
-        this.props.dispatch(getArtistsAction(this.state.term));
-      }
-      if (this.state.type === 'Track') {
-        this.props.dispatch(getTracksAction(this.state.term));
-      }
+    if (this.state.type === 'Album') {
+      this.props.dispatch(getAlbumsAction(this.state.term));
+    }
+    if (this.state.type === 'Artist') {
+      this.props.dispatch(getArtistsAction(this.state.term));
+    }
+    if (this.state.type === 'Track') {
+      this.props.dispatch(getTracksAction(this.state.term));
+    }
+
+    if (window.location.href.includes('/fav')) {
+      this.props.nav.push('/');
     }
   };
 
   private changeTerm = (e: any) => {
+    this.setState({ term: e });
     if (e.length > 3) {
       this.props.dispatch(autocompleteAction(e, this.state.type));
     }
+  };
+  private changeSelection = (e: any) => {
     this.setState({ term: e });
+    this.search(this.state.type);
   };
 }
 
-export default connect()(Searchbar);
+function mapStateToProps(state: any) {
+  return { autocomplete: state.autocompleteReducer };
+}
+
+export default connect(mapStateToProps)(Searchbar);

@@ -99,25 +99,51 @@ export function autocompleteAction(term: string, type: string) {
     search(term, type, true)
       .then(response => {
         let result = [];
-        if (type === 'album') {
-          result = response.data.albums.items.map((item: any) => {
+        if (response && response.data) {
+          result = response.data;
+        }
+        if (type === 'Album') {
+          result = result.albums.items.map((item: any) => {
             return item.name;
           });
-        }
-        if (type === 'artist') {
-          result = response.data.artists.items.map((item: any) => {
-            return item.name;
+
+          result = result.filter((item: any, i: number) => {
+            if (i < 5) {
+              return item;
+            } else {
+              return;
+            }
           });
         }
-        if (type === 'track') {
-          result = response.data.tracks.items.map((item: any) => {
+        if (type === 'Artist') {
+          result = result.artists.items.map((item: any) => {
             return item.name;
           });
+
+          result = result.filter((item: any, i: number) => {
+            if (i < 5) {
+              return item;
+            } else {
+              return;
+            }
+          });
         }
-        dispatch(autocomplete({ result }));
+        if (type === 'Track') {
+          result = result.tracks.items.map((item: any) => {
+            return item.name;
+          });
+          result = result.filter((item: any, i: number) => {
+            if (i < 5) {
+              return item;
+            } else {
+              return;
+            }
+          });
+        }
+        dispatch(autocomplete(result));
       })
       .catch(error => {
-        console.log(error);
+        throw error;
       });
   };
 }
@@ -137,7 +163,7 @@ export function getAlbumsAction(term: string) {
         dispatch(setOptions(options));
       })
       .catch(error => {
-        console.log(error);
+        throw error;
       });
   };
 }
@@ -157,7 +183,7 @@ export function getArtistsAction(term: string) {
         dispatch(setOptions(options));
       })
       .catch(error => {
-        console.log(error);
+        throw error;
       });
   };
 }
@@ -177,7 +203,7 @@ export function getTracksAction(term: string) {
         dispatch(setOptions(options));
       })
       .catch(error => {
-        console.log(error);
+        throw error;
       });
   };
 }

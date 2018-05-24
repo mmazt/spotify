@@ -1,18 +1,12 @@
 .searchInput {
-    min-width: 20vw;
-    max-width: 30vw;
+    min-width: 25vw;
+    max-width: 35vw;
 }
 
-.searchInput input {
-    background-color: #fff;
-    padding: 5px 15px !important;
-    border-radius: 50px;
-}
-
-.searchInput label {
-    top: calc(var(--input-padding) + 1 * var(--input-field-padding)) !important;
-    left: 10px !important;
-    color: #424242;
+.searchInput ul {
+    min-width: 50vw !important;
+    color: black !important;
+    font-size: 0.5rem !important;
 }
 
 .searchContainer {
@@ -78,17 +72,17 @@
 }
 
 .dialogImgContainer {
-    max-width: 40vw;
+    max-width: 30vw;
     align-self: center;
     justify-self: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
 .dialogImg {
-    min-width: 30vw;
+    min-width: 25vw;
     max-width: 30vw;
 }
 
@@ -108,17 +102,19 @@
 }
 
 .dialogTable {
-    max-width: 64vw;
-    max-height: 50vh !important;
+    max-width: 65vw;
+    max-height: 60vh !important;
+    align-self: flex-end;
     overflow-y: scroll;
 }
 
 .albumContainer {
     display: flex;
     justify-content: space-around;
-    align-items: center;
+    align-items: flex-end;
     flex-wrap: wrap;
-    max-height: 80vh;
+    margin-top: 5vh;
+    max-height: 70vh;
     min-width: 90vw !important;
 }
 
@@ -160,8 +156,11 @@
         max-width: 80vw;
     }
     .dialogImg {
-        min-width: 10vw;
-        max-width: 10vw;
+        width: 20vw;
+        margin-bottom: 2vh;
+    }
+    .dialogImgContainer {
+        min-width: 80vw;
     }
     .thumbnail {
         max-width: 25px;

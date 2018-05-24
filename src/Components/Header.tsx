@@ -6,16 +6,18 @@ import UserInfo from './UserInfo';
 
 const style = require('../styles.css');
 
-const Header = (props: { page: string }) => {
+const Header = (props: any) => {
   return (
     <AppBar
-      leftIcon={<img height="100%" src="logo.svg" />}
+      leftIcon={
+        <img height="100%" style={{ marginRight: '5px' }} src="logo.svg" />
+      }
       fixed={true}
       rightIcon={<UserInfo />}
     >
       <div className={style.headerContainer}>
         <div className={style.searchItems}>
-          <Searchbar />
+          <Searchbar nav={props.history} />
         </div>
       </div>
     </AppBar>

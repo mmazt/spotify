@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import Authorize from './Components/Authorize';
 import Header from './Components/Header';
 import MainPage from './Components/Main';
+import FavoritesList from './Components/Search/FavoritesList';
 
 import './App.css';
 
@@ -13,17 +14,13 @@ class App extends React.Component {
       <div>
         {/* Header */}
         <Switch>
-          <Route
-            exact={true}
-            path="/"
-            render={props => <Header page="main" {...props} />}
-          />
+          <Route path="/" render={Header} />
         </Switch>
         <Switch>
           {/* Main Page */}
           <Route exact={true} path="/" component={MainPage} />
           {/* Search Header */}
-          <Route path="/search" />
+          <Route path="/fav" component={FavoritesList} />
           {/* Authentication */}
           <Route path="/callback/" component={Authorize} />
         </Switch>

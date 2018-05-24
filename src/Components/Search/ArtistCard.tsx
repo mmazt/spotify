@@ -19,7 +19,6 @@ const AlbumCard = (props: {
       return;
     }
   });
-  console.log(albums);
   albums = albums.map((item: any) => {
     return (
       <TableRow key={item.id}>
@@ -42,7 +41,6 @@ const AlbumCard = (props: {
       </TableRow>
     );
   });
-  console.log(albums);
   albums = albums.filter((item: any, i: number): any => {
     if (i < 5) {
       return item;
@@ -50,7 +48,6 @@ const AlbumCard = (props: {
       return;
     }
   });
-  console.log(albums);
   return (
     <Dialog
       actions={[{ label: 'Close', onClick: props.handleToggle }]}

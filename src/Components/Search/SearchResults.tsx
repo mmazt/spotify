@@ -226,7 +226,7 @@ class SearchResults extends React.Component<IProps, IState> {
       await saveToFavorites(id, type);
       this.setState({ favorites });
     } else {
-      favorites[type].slice(favorites[type].indexOf(id), 1);
+      favorites[type].splice(favorites[type].indexOf(id), 1);
       await deleteFromFavorites(id, type);
       this.setState({ favorites });
     }

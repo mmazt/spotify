@@ -19,24 +19,8 @@ export const search = async (
   autocomplete?: boolean
 ) => {
   const token = await getStorageString('token');
-  const url = await Promise.resolve(
-    autocomplete
-      ? env().api +
-        '/search/?q=' +
-        type +
-        ':' +
-        term +
-        '*' +
-        '&type=' +
-        type +
-        '&market=from_token'
-      : env().api +
-        '/search/?q=' +
-        term +
-        '&type=' +
-        type +
-        '&market=from_token'
-  );
+  const url =
+    env().api + '/search/?q=' + term + '&type=' + type + '&market=from_token';
   return axios({
     headers: {
       Authorization: 'Bearer ' + token
@@ -108,7 +92,7 @@ export const userData = async () => {
       Promise.resolve(Index.store.dispatch(getUser(result)))
     ]);
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 };
 
@@ -171,7 +155,6 @@ export const clearToken = () => {
 
 // Busca os dados de todos os favoritos, das três categorias
 export const getAllFavorites = async () => {
-  console.log('teste');
   try {
     Promise.all([
       getFavoritesData('albums'),
@@ -179,7 +162,6 @@ export const getAllFavorites = async () => {
       getFavoritesData('tracks')
     ]);
   } catch (error) {
-    console.log(error);
     return Promise.resolve(false);
   }
   return Promise.resolve(true);
@@ -217,7 +199,7 @@ const getFavoritesData = async (type: string) => {
         }
       })
       .catch((error: any) => {
-        console.log(error);
+        throw error;
       });
   }
 };
@@ -239,7 +221,7 @@ export const deleteFromFavorites = async (id: string, type: string) => {
   const user = await getStorageData('user');
   const favorites: any = await getFavorites(type);
   if (favorites[type].indexOf(id) >= 0) {
-    favorites[type].slice(favorites[type].indexOf(id), 1);
+    favorites[type].splice(favorites[type].indexOf(id), 1);
     await saveStorageData('favorites_' + user.name, favorites);
     const result = await getFavorites(type);
     return Promise.resolve(Index.store.dispatch(getFavoriteIds(result)));
