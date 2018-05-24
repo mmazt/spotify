@@ -136,6 +136,7 @@
 
 .searchResults {
     max-height: 82vh;
+    min-width: 90vw;
     max-width: 90vw;
     overflow-y: scroll;
 }
