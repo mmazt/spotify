@@ -27,20 +27,27 @@ class FavoritesList extends React.Component<IProps> {
       this.props.favorites.artists &&
       this.props.favorites.artists.length > 0
         ? this.props.favorites.artists.map((item: any) => {
-            return (
-              <TableRow key={item.id}>
-                <TableCell>
-                  {item.images.length > 0 ? (
-                    <img className={style.thumbnail} src={item.images[0].url} />
-                  ) : (
-                    ''
-                  )}
-                </TableCell>
-                <TableCell>Artist</TableCell>
+            if (item) {
+              return (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    {item.images.length > 0 ? (
+                      <img
+                        className={style.thumbnail}
+                        src={item.images[0].url}
+                      />
+                    ) : (
+                      ''
+                    )}
+                  </TableCell>
+                  <TableCell>Artist</TableCell>
 
-                <TableCell>{item.name}</TableCell>
-              </TableRow>
-            );
+                  <TableCell>{item.name}</TableCell>
+                </TableRow>
+              );
+            } else {
+              return '';
+            }
           })
         : [];
     const tracks =
@@ -48,23 +55,27 @@ class FavoritesList extends React.Component<IProps> {
       this.props.favorites.tracks &&
       this.props.favorites.tracks.length > 0
         ? this.props.favorites.tracks.map((item: any) => {
-            return (
-              <TableRow key={item.id}>
-                <TableCell>
-                  {item.album.images.length > 0 ? (
-                    <img
-                      className={style.thumbnail}
-                      src={item.album.images[0].url}
-                    />
-                  ) : (
-                    ''
-                  )}
-                </TableCell>
-                <TableCell>Track</TableCell>
+            if (item) {
+              return (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    {item.album.images.length > 0 ? (
+                      <img
+                        className={style.thumbnail}
+                        src={item.album.images[0].url}
+                      />
+                    ) : (
+                      ''
+                    )}
+                  </TableCell>
+                  <TableCell>Track</TableCell>
 
-                <TableCell>{item.name}</TableCell>
-              </TableRow>
-            );
+                  <TableCell>{item.name}</TableCell>
+                </TableRow>
+              );
+            } else {
+              return '';
+            }
           })
         : [];
 
@@ -73,19 +84,26 @@ class FavoritesList extends React.Component<IProps> {
       this.props.favorites.albums &&
       this.props.favorites.albums.length > 0
         ? this.props.favorites.albums.map((item: any) => {
-            return (
-              <TableRow key={item.id}>
-                <TableCell>
-                  {item.images.length > 0 ? (
-                    <img className={style.thumbnail} src={item.images[0].url} />
-                  ) : (
-                    ''
-                  )}
-                </TableCell>
-                <TableCell>Album</TableCell>
-                <TableCell>{item.name}</TableCell>
-              </TableRow>
-            );
+            if (item) {
+              return (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    {item.images.length > 0 ? (
+                      <img
+                        className={style.thumbnail}
+                        src={item.images[0].url}
+                      />
+                    ) : (
+                      ''
+                    )}
+                  </TableCell>
+                  <TableCell>Album</TableCell>
+                  <TableCell>{item.name}</TableCell>
+                </TableRow>
+              );
+            } else {
+              return '';
+            }
           })
         : [];
 

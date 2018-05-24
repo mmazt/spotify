@@ -6,11 +6,16 @@ import UserInfo from './UserInfo';
 
 const style = require('../styles.css');
 
+const win = window.innerWidth;
 const Header = (props: any) => {
   return (
     <AppBar
       leftIcon={
-        <img height="100%" style={{ marginRight: '5px' }} src="logo.svg" />
+        win > 480 ? (
+          <img height="100%" style={{ marginRight: '5px' }} src="logo.svg" />
+        ) : (
+          ''
+        )
       }
       fixed={true}
       rightIcon={<UserInfo />}
